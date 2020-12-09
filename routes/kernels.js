@@ -1,53 +1,85 @@
 var express = require('express');
 var router = express.Router();
+const token = require('./token.js')
 
 const kernels = {}
 
-router.get('/', function(req, res, next) {
+router.get('/', function(req, res, next) {    
     res.send('kernels: ' + JSON.stringify(kernels));
 });
 
 router.post('/', function(req, res, next) {
+    if(req.body.token !== token){
+        res.send('error: token failed');
+        return
+    }
     const name = req.body.name
     // console.log(req.body);
-    //check name
-    kernels[name] = {
-        settings: {},
-        status: 'initialized'
-    }
-    Object.defineProperty(kernels[name], 'core', {
-        set(nV){
-            this.result = eval(nV)
+    if (!kernels[name]) {
+        kernels[name] = {
+            settings: {},
+            status: 'initialized'
         }
-    })
-    res.send('added: '+ name);
+        Object.defineProperty(kernels[name], 'core', {
+            set(nV){
+                this.result = eval(nV)
+            }
+        })
+        res.send('added: '+ name);        
+    } else {
+        res.send('error: kernel with this name is already exist'); 
+    }
 });
 
-router.put('/', function(req, res, next) {
-    //edit
+router.put('/:name', function(req, res, next) {
+    if(req.body.token !== token){
+        res.send('error: token failed');
+        return
+    }    
+    const name = req.params.name
+    if (req.body.valueJson) {
+        kernels[name][req.body.attr] = JSON.parse(req.body.valueJson)
+    } else {
+        kernels[name][req.body.attr] = req.body.value
+    }
     res.send('edited: '+ name);
 });
 
-router.delete('/', function(req, res, next) {
-    const name = req.body.name
+router.delete('/:name', function(req, res, next) {
+    if(req.body.token !== token){
+        res.send('error: token failed');
+        return
+    }    
+    const name = req.params.name
     delete kernels[name]
-    //del core
     res.send('deleted: '+ name);
 });
 
 router.post('/start/:name', function(req, res, next) {
+    if(req.body.token !== token){
+        res.send('error: token failed');
+        return
+    }    
     const name = req.params.name
     kernels[name].status = 'started'
     res.send('started: '+ name);
 });
 
 router.post('/stop/:name', function(req, res, next) {
+    if(req.body.token !== token){
+        res.send('error: token failed');
+        return
+    }    
     const name = req.params.name
     kernels[name].status = 'stopped'
     res.send('stopped: '+ name);
 });
 
 router.post('/eval/:name', function(req, res, next) {
+    if(req.body.token !== token){
+        res.send('error: token failed');
+        return
+    }    
     const name = req.params.name
     if (kernels[name].status === 'started') {
         const cell = req.body.cell
