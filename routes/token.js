@@ -1,6 +1,6 @@
-const uuid = require('uuid');
+import {uuid} from '../helpers/index.js';
 
-token = uuid.v1()
+const token = (new Date()).getTime().toString(36) + Math.random().toString(36) + Math.random().toString(36)
 console.log('Token: ', token);
 
-module.exports = token
+export default token

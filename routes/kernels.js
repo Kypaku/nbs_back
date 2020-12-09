@@ -1,6 +1,6 @@
-var express = require('express');
+import express from 'express'
 var router = express.Router();
-const token = require('./token.js')
+import token from './token.js'
 
 const kernels = {}
 
@@ -88,4 +88,4 @@ router.post('/eval/:name', function(req, res, next) {
     res.send( kernels[name].result);
 });
 
-module.exports = router;
+export default router;

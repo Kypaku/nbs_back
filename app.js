@@ -1,11 +1,12 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-const cors = require('cors');
+import express from 'express'
+import path from 'path'
+import cookieParser from 'cookie-parser'
+import logger from 'morgan'
+import cors from 'cors'
 
-var indexRouter = require('./routes/index');
-var kernelsRouter = require('./routes/kernels');
+import indexRouter from './routes/index.js'
+import kernelsRouter from './routes/kernels.js'
+import {dirname} from 'gm_node';
 
 var app = express();
 
@@ -13,10 +14,10 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(dirname(), 'public')));
 app.use(cors())
 
 app.use('/', indexRouter);
 app.use('/kernels', kernelsRouter);
 
-module.exports = app;
+export default app;
