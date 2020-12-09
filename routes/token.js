@@ -1,6 +1,6 @@
-const {uuid} = require('../helpers/index')
+const uuid = require('uuid');
 
-token = uuid()
+token = uuid.v1()
 console.log('Token: ', token);
 
 module.exports = token
