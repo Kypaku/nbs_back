@@ -1,4 +1,4 @@
-import {dirname, getFilesFull, isDirectory, getFileExtension, readFileJSON, openFile, getFilesInfo, renameFile, parentDir} from './../node_modules/gm_node/index.js'
+import {dirname, writeFileJSON, isDirectory, getFileExtension, readFileJSON, openFile, getFilesInfo, renameFile, parentDir} from './../node_modules/gm_node/index.js'
 import express from 'express'
 var router = express.Router();
 import token from './token.js'
@@ -9,12 +9,8 @@ router.get('/', function(req, res, next) {
     res.send(files);
 });
 
-router.post('/', function(req, res, next) {
-    if(req.body.token !== token){
-        res.send('error: token failed');
-        return
-    }
-    const file = req.body.file     
+router.get('/open', function(req, res, next) {
+    const file = req.query.path   
     if (getFileExtension(file) === '.jsnb') {
         const data = readFileJSON(file)
         res.send(data)
@@ -24,14 +20,27 @@ router.post('/', function(req, res, next) {
     }
 });
 
-router.put('/', function(req, res, next) {
+//Save
+router.post('/', function(req, res, next) {
     if(req.body.token !== token){
         res.send('error: token failed');
         return
     }    
     const file = req.body.file
-    const name = req.body.name
-    renameFile(file, parentDir(file) + '/' + name)
+    const data = req.body.body
+    writeFileJSON(file, data)
+    res.send('ok');
+});
+
+//Rename
+router.put('/', function(req, res, next) {
+    if(req.body.token !== token){
+        res.send('error: token failed');
+        return
+    }    
+    const file1 = req.body.file1
+    const file2 = req.body.file2
+    renameFile(file1, file2)
     res.send('ok');
 });
 
