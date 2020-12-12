@@ -6,6 +6,7 @@ import cors from 'cors'
 
 import indexRouter from './routes/index.js'
 import kernelsRouter from './routes/kernels.js'
+import fsRouter from './routes/fileSystem.js'
 import {dirname} from 'gm_node';
 
 var app = express();
@@ -19,5 +20,6 @@ app.use(cors())
 
 app.use('/', indexRouter);
 app.use('/kernels', kernelsRouter);
+app.use('/fileSystem', fsRouter);
 
 export default app;
