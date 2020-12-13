@@ -20,19 +20,17 @@ it(`Routes - ${route} GET`, async () => {
 it(`Routes - ${route} POST`, async () => {
     const res = await axios.post(`${API_URL}/${route}`, {name: kernelName, status: 'started', token})   
     expect(typeof res.data).toBe('object');
-    kenelsL = Object.keys(res.data).length
+    kenelsL = res.data.length
     expect(kenelsL > 0).toBe(true);
 })
 
 it(`Routes - ${route} POST /eval`, async () => {
     const res = await axios.post(`${API_URL}/${route}/eval/${kernelName}`, {content: '1+1', token})
-    console.log(res.data, token);
     expect(res.data).toBe(2);
 })
 
 it(`Routes - ${route} DELETE`, async () => {
     const res = await axios.delete(`${API_URL}/${route}/${kernelName}`)
-    console.log(res.data, token);
     expect(typeof res.data).toBe('object');
-    expect(Object.keys(res.data).length).toBe(kenelsL - 1);
+    expect(res.data.length).toBe(kenelsL - 1);
 })
